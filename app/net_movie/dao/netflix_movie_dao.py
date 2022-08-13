@@ -47,16 +47,28 @@ class Movie:
         return result
 
 
-    def movie_from_title(self, title) -> str:
+    def movie_from_title(self, titl) -> str:
         """
         поиск фильма по названию
         :param title:
         :return:
         """
-        temp = self.compreh_key_values(self.get_movie())
-        for i in range(len(temp)):
-            if title in temp[i]["title"]:
-                return temp[i]
+
+        # temp = self.compreh_key_values(self.get_movie())
+        # for i in range(len(temp)):
+        #     if title in temp[i]["title"]:
+        #         return temp[i]
+        with sqlite3.connect(DATA_PATH) as connection:
+            cursor = connection.cursor()
+            query = f"""
+                        SELECT *
+                        FROM netflix
+                        WHERE "title" LIKE '%{titl}%'
+                    """
+            cursor.execute(query)
+            res = cursor.fetchall()
+            result = self.compreh_key_values(res)
+            return result
 
     def movies_year_to_year(self, year_min=int, year_max=int):
         """
@@ -65,12 +77,23 @@ class Movie:
         :param year_max:
         :return:
         """
-        temp = self.compreh_key_values(self.get_movie())
-        result = []
-        while len(result) <= 100:
-            for i in range(len(temp)):
-                if temp[i]["release_year"] == year_max or temp[i]["release_year"] == year_min:
-                    result.append(temp[i])
+        # temp = self.compreh_key_values(self.get_movie())
+        # result = []
+        # while len(result) <= 100:
+        #     for i in range(len(temp)):
+        #         if temp[i]["release_year"] == year_max or temp[i]["release_year"] == year_min:
+        #             result.append(temp[i])
+        with sqlite3.connect(DATA_PATH) as connection:
+            cursor = connection.cursor()
+            query = f"""
+                        SELECT *
+                        FROM netflix
+                        WHERE release_year BETWEEN '{year_min}' AND '{year_max}'
+                        
+                    """
+            cursor.execute(query)
+            res = cursor.fetchall()
+            result = self.compreh_key_values(res)
         return result
 
     def rating_children(self):
@@ -78,11 +101,21 @@ class Movie:
         выводит ретинг G
         :return:
         """
-        temp = self.compreh_key_values(self.get_movie())
-        result = []
-        for i in range(len(temp)):
-            if temp[i]["rating"] == 'G':
-                result.append(temp[i])
+        # temp = self.compreh_key_values(self.get_movie())
+        # result = []
+        # for i in range(len(temp)):
+        #     if temp[i]["rating"] == 'G':
+        #         result.append(temp[i])
+        with sqlite3.connect(DATA_PATH) as connection:
+            cursor = connection.cursor()
+            query = f"""
+                        SELECT *
+                        FROM netflix
+                        WHERE rating LIKE 'G'
+                    """
+            cursor.execute(query)
+            res = cursor.fetchall()
+            result = self.compreh_key_values(res)
         return result
 
     def rating_family(self):
@@ -90,12 +123,24 @@ class Movie:
         выводит ретинг G, PG, PG-13
         :return:
         """
-        rating_family = ['G', 'PG', 'PG-13']
-        temp = self.compreh_key_values(self.get_movie())
-        result = []
-        for i in range(len(temp)):
-            if temp[i]["rating"] in rating_family:
-                result.append(temp[i])
+        # rating_family = ['G', 'PG', 'PG-13']
+        # temp = self.compreh_key_values(self.get_movie())
+        # result = []
+        # for i in range(len(temp)):
+        #     if temp[i]["rating"] in rating_family:
+        #         result.append(temp[i])
+        with sqlite3.connect(DATA_PATH) as connection:
+            cursor = connection.cursor()
+            query = f"""
+                        SELECT *
+                        FROM netflix
+                        WHERE rating LIKE 'G'
+                        OR rating LIKE 'PG'
+                        OR rating LIKE 'PG-13'
+                    """
+            cursor.execute(query)
+            res = cursor.fetchall()
+            result = self.compreh_key_values(res)
         return result
 
     def rating_adult(self):
@@ -103,12 +148,23 @@ class Movie:
         выводит ретинг R, NC-17
         :return:
         """
-        rating_adult = ['R', 'NC-17']
-        temp = self.compreh_key_values(self.get_movie())
-        result = []
-        for i in range(len(temp)):
-            if temp[i]["rating"] in rating_adult:
-                result.append(temp[i])
+        # rating_adult = ['R', 'NC-17']
+        # temp = self.compreh_key_values(self.get_movie())
+        # result = []
+        # for i in range(len(temp)):
+        #     if temp[i]["rating"] in rating_adult:
+        #         result.append(temp[i])
+        with sqlite3.connect(DATA_PATH) as connection:
+            cursor = connection.cursor()
+            query = f"""
+                        SELECT *
+                        FROM netflix
+                        WHERE rating LIKE 'R'
+                        OR rating LIKE 'NC-17'
+                    """
+            cursor.execute(query)
+            res = cursor.fetchall()
+            result = self.compreh_key_values(res)
         return result
 
     def movies_from_genre(self, genre):
@@ -116,10 +172,10 @@ class Movie:
 
 
 
-tes = Movie()
+#tes = Movie()
 #print(tes.get_movie())
 # print(tes.compreh_key_values(tes.get_movie()))
-# print(tes.movie_from_title('Tallulah'))
-#print(tes.movies_year_to_year(2021, 2020))
+#print(tes.movie_from_title('Tallulah'))
+#print(tes.movies_year_to_year(2020, 2021))
 # print(tes.rating_family())
 
