@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Фильмы не для детей</title>
+</head>
+<body>
+<h1 align="center"><font color="olive">Ты нашел фильмы</font></h1>
+{%for exemp_mov in exemp_move%}
+<h2 align="center"><font color="#8b0000">{{exemp_mov.title}}</font></h2>
+<h2 align="center"><font color="#8b0000">{{exemp_mov.rating}}</font></h2>
+<h5 align="center"><font>{{exemp_mov.description}}</font></h5>
+{% endfor %}
+</body>
+</html>

@@ -1,4 +1,6 @@
-import sqlite3
+import sqlite3, json
+
+from flask import jsonify
 
 from app.config import DATA_DIR
 
@@ -7,6 +9,9 @@ DATA_PATH = DATA_DIR.joinpath("netflix.db")
 # rating, duration, duration_type, listed_in, description """
 
 class Movie:
+    """
+    для работы с БД на уровне функций и классов
+    """
     def get_movie(self):
         """
         возвращает всю базу данных
@@ -43,17 +48,78 @@ class Movie:
 
 
     def movie_from_title(self, title) -> str:
+        """
+        поиск фильма по названию
+        :param title:
+        :return:
+        """
         temp = self.compreh_key_values(self.get_movie())
         for i in range(len(temp)):
             if title in temp[i]["title"]:
                 return temp[i]
 
+    def movies_year_to_year(self, year_min=int, year_max=int):
+        """
+        принимает два года, выводит 100 фильмов
+        :param year_min:
+        :param year_max:
+        :return:
+        """
+        temp = self.compreh_key_values(self.get_movie())
+        result = []
+        while len(result) <= 100:
+            for i in range(len(temp)):
+                if temp[i]["release_year"] == year_max or temp[i]["release_year"] == year_min:
+                    result.append(temp[i])
+        return result
 
+    def rating_children(self):
+        """
+        выводит ретинг G
+        :return:
+        """
+        temp = self.compreh_key_values(self.get_movie())
+        result = []
+        for i in range(len(temp)):
+            if temp[i]["rating"] == 'G':
+                result.append(temp[i])
+        return result
+
+    def rating_family(self):
+        """
+        выводит ретинг G, PG, PG-13
+        :return:
+        """
+        rating_family = ['G', 'PG', 'PG-13']
+        temp = self.compreh_key_values(self.get_movie())
+        result = []
+        for i in range(len(temp)):
+            if temp[i]["rating"] in rating_family:
+                result.append(temp[i])
+        return result
+
+    def rating_adult(self):
+        """
+        выводит ретинг R, NC-17
+        :return:
+        """
+        rating_adult = ['R', 'NC-17']
+        temp = self.compreh_key_values(self.get_movie())
+        result = []
+        for i in range(len(temp)):
+            if temp[i]["rating"] in rating_adult:
+                result.append(temp[i])
+        return result
+
+    def movies_from_genre(self, genre):
+        temp = self.compreh_key_values(self.get_movie())
 
 
 
 tes = Movie()
-# print(tes.get_movie())
+#print(tes.get_movie())
 # print(tes.compreh_key_values(tes.get_movie()))
-print(tes.movie_from_title('Tallulah'))
+# print(tes.movie_from_title('Tallulah'))
+#print(tes.movies_year_to_year(2021, 2020))
+# print(tes.rating_family())
 
